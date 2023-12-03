@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+public interface GenericDAO<T,K> {
+	List<T> getAll();
+	List<T> getbyId(K id);
+	void insert(T obj);
+	void update(T obj);
+	void delete(K id);
+	int count();
+}
+
+
+
+
+
+
+
+
+
+
+
+public List<CategoryModel> findAll() {
+		List<CategoryModel> results = new ArrayList<CategoryModel>();
+		// câu lệnh sql
+		String sql = "SELECT * FROM category";
+		// open connetion
+		Connection connection = getConnection();
+		// sử dụng PreparedStatement để thực hiện câu lệnh sql
+		PreparedStatement statement = null;
+		// kết quả trả ra là 1 object và object đó là ResultSet
+		ResultSet resultSet = null;
+		if (connection != null) {
+			try {
+				// truyền câu lệnh sql vào
+				statement = connection.prepareStatement(sql);
+				// thực hiện câu lệnh sql và trả về object resultset
+				// resultset như là 1 table và muốn hiển thị dữ liệu thì phải cho vào vòng lặp
+				resultSet = statement.executeQuery();
+				// vòng lặp lấy ra kết quả
+				while (resultSet.next()) {
+					CategoryModel category = new CategoryModel();
+					category.setId(resultSet.getLong("id"));
+					category.setCode(resultSet.getString("code"));
+					category.setName(resultSet.getString("name"));
+					results.add(category);
+				}
+				return results;
+
+			} catch (SQLException e) {
+				return null;
+			} finally {
+				try {
+					if (connection != null) {
+						connection.close();
+					}
+					if (statement != null) {
+						statement.close();
+					}
+					if (resultSet != null) {
+						resultSet.close();
+					}
+				} catch (Exception e2) {
+					return null;
+				}
+			}
+		}
+		return null;
+	}
+
+	
+</body>
+</html>
